@@ -6,18 +6,21 @@ import (
 	"github.com/cheunn-panaa/la-chistera/usecase/user"
 	"github.com/gofiber/fiber/v2"
 
-	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
+	log "github.com/sirupsen/logrus"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
 func main() {
-	// UNIX Time is faster and smaller than most timestamps
-	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 
-	log.Info().Msg("Starting the application...")
+	configFile := os.Getenv("CONFIG_FILE") || "config.yaml"
+	config, err := config.NewConfig(configFile)
+
+	// Log as JSON instead of the default ASCII formatter.
+	log.SetFormatter(&log.JSONFormatter{})
+
+	log.Info("Starting the application...")
 
 	app := fiber.New()
 	app.Get("/", func(ctx *fiber.Ctx) error {
@@ -25,18 +28,24 @@ func main() {
 	})
 
 	api := app.Group("/api")
-	dsn := "root:root@tcp(127.0.0.1:3306)/chistera?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", 
+	config.Db.User, 
+	config.Db.Password;
+	config.Db.Host,
+	config.Db.Port,
+	config.Db.Name
+)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
 
 	// Initialize each repository
-	log.Info().Msg("Initialising Repositories...")
+	log.Info("Initialising Repositories...")
 	userRepo := repository.NewUserRepo(db)
 
 	// Initialize each pkg
-	log.Info().Msg("Initialising Services...")
+	log.Info("Initialising Services...")
 	userService := user.NewService(userRepo)
 
 	// Initialize Routers when services are done

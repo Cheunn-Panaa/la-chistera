@@ -3,7 +3,7 @@ package user
 import (
 	"github.com/cheunn-panaa/la-chistera/entity"
 
-	"github.com/rs/zerolog/log"
+	log "github.com/sirupsen/logrus"
 )
 
 type Service struct {
@@ -12,7 +12,7 @@ type Service struct {
 
 //NewService is used to create a single instance of the service
 func NewService(r Repository) *Service {
-	log.Info().Msg("Initialising User Service...")
+	log.Info("Initialising User Service...")
 	return &Service{
 		repository: r,
 	}

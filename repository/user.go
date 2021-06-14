@@ -2,7 +2,7 @@ package repository
 
 import (
 	"github.com/cheunn-panaa/la-chistera/entity"
-	"github.com/rs/zerolog/log"
+	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )
 
@@ -13,7 +13,7 @@ type UserRepository struct {
 // NewUserRepo will create an implementation of user.Repository
 func NewUserRepo(db *gorm.DB) *UserRepository {
 
-	log.Info().Msg("Initialising User Repository...")
+	log.Info("Initialising User Repository...")
 	return &UserRepository{
 		DB: db,
 	}

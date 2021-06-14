@@ -5,24 +5,21 @@ import (
 	"gorm.io/gorm"
 )
 
-//Construct your model under entities.
+//Construct your model under entity.
 type User struct {
 	gorm.Model
 	FirstName string `json:"firstname"`
 	LastName  string `json:"lastname"`
 	Email     string `json:"email"`
 	Password  string `json:"password"`
+
+	Bets []*MatchBets `gorm:"many2many:bets"`
 }
 
 // Only one struct per file should exists unless another struct is closely related with the one defined in this file.
-type DeleteRequest struct {
-	ID string `json:"id" binding:"required,gte=1"`
-}
-
-// Users struct
-type Users struct {
-	Users []User `json:"users"`
-}
+//type DeleteRequest struct {
+//	ID string `json:"id" binding:"required,gte=1"`
+//}
 
 //NewUser create a new user
 func NewUser(email, password, firstName, lastName string) (*User, error) {
